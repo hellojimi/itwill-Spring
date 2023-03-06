@@ -24,7 +24,7 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	// 2) 메서드 => @RequestMapping 하나씩 주소매핑 => 가상주소 자동으로 뽑아와서 value = "/" 비교
-//	=>  전송방식 method = RequestMethod.GET 확인 => 메서드 자동으로 동작
+	//	=>  전송방식 method = RequestMethod.GET 확인 => 메서드 자동으로 동작
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		//로고 출력
