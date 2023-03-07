@@ -19,8 +19,7 @@
 	</bean>
 
 	<!-- MemberServiceImp1 객체 생성 MemberService memberService = new MemberServiceImp1() -->
-	<bean id="memberService"
-		class="com.itwillbs.service.MemberServiceImpl">
+	<bean id="memberService" class="com.itwillbs.service.MemberServiceImpl">
 		<!-- 생성자 호출 -->
 		<!-- <constructor-arg name="memberDAO" ref="memberDAO"></constructor-arg> -->
 
@@ -31,14 +30,9 @@
 	<!-- MemberDAOImp1 객체 생성 MemberDTO memberDTO = new MemberDTOImp1() -->
 	<bean id="memberDAO" class="com.itwillbs.dao.MemberDAOImpl"></bean>
 
-	<!-- DB 연동을 하기 위해서 JDBC 프로그램 필요 JDBC프로그램 자동 설치 pom.xml 파일 설치할 프로그램 목록을 넣으면 
-		Maven 저장소에서 자동으로 프로그램 다운됨 -->
-	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<version>8.0.32</version>
-	</dependency>
+	<!-- DB 연동을 하기 위해서 JDBC 프로그램 필요 JDBC프로그램 자동 설치 
+		pom.xml 파일 설치할 프로그램 목록을 넣으면 Maven 저장소에서 자동으로 프로그램 다운됨 -->
+
 
 
 </beans>
