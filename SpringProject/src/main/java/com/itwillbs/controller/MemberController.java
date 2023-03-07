@@ -1,5 +1,6 @@
 package com.itwillbs.controller;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.domain.MemberDTO;
 import com.itwillbs.service.MemberService;
-import com.itwillbs.service.MemberServiceImp1;
+import com.itwillbs.service.MemberServiceImpl;
 
 @Controller
 public class MemberController {
@@ -20,6 +21,31 @@ public class MemberController {
 	//	 => 서버 기억장소 할당
 	//	 => request 기억장소 안에 사용자가 입력한 파라미터 정보, 서버/클라이언트/세션/쿠키 정보 등 저장
 	
+//	MemberService memberService = new MemberServiceImp1();
+	
+	// 스프링 3버전 자동으로 객체 생성 방법
+	// 데이터 은닉
+	// 스프링 파일 root-context.xml에서 객체 생성
+	// MemberController 파일에 멤버변수 memberService 전달
+	private MemberService memberService;
+	
+	// 멤버변수 값을 생성자 또는 set 메서드 통해서 전달
+	// 생성자
+//	public MemberController(MemberService memberService) {
+//		this.memberService = memberService;
+//	}
+	// set 메서드
+	@Inject
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+	
+	// 스프링 4버전
+	// 멤버변수 부모 공통적인 틀 선언 => 데이터 은닉
+	// @Inject 부모를 상속받은 자식 클래스 자동으로 찾아옴
+	//	@Inject
+	//	private MemberService memberService;
+	
 	//	가상주소 http://localhost:8080/myweb/member/insert
 	//	       주소매핑 ->  member/insertForm.jsp 
 	@RequestMapping(value = "/member/insert", method = RequestMethod.GET)
@@ -28,10 +54,9 @@ public class MemberController {
 //		RequestDispatcher dispatcher = request.getRequestDispatcher(forward.getPath());
 //		dispatcher.forward(request, response);
 
-		// /WEB-INF/views/member/insertForm.jsp 
 		return "member/insertForm";
 	}
-	
+
 	// 가상주소 http://localhost:8080/myweb/member/insertPro
 	//        전송방식 POST
 	@RequestMapping(value = "/member/insertPro", method = RequestMethod.POST)
@@ -63,7 +88,7 @@ public class MemberController {
 		//    MemberDAO interface, MemberDAOImp 클래스 insertMember()
 		
 		// MemberService 부모 = MemberServiceImp1 자식 객체 생성
-		MemberService memberService = new MemberServiceImp1();
+//		MemberService memberService = new MemberServiceImp1();
 		// 메서드 호출
 		memberService.insertMember(memberDTO);
 		
@@ -76,7 +101,6 @@ public class MemberController {
 	@RequestMapping(value = "/member/login", method = RequestMethod.GET)
 	public String login() {
 
-		// /WEB-INF/views/member/loginForm.jsp 
 		return "member/loginForm";
 	}
 	
@@ -89,9 +113,14 @@ public class MemberController {
 		System.out.println(memberDTO.getId());
 		System.out.println(memberDTO.getPass());
 		System.out.println(memberDTO.getName());
-
-		// 가상주소에서 주소변경 하면서 이동 (가상주소 /member/main)
-		// response.sendRedirect(forward.getPath());
+		
+		// MemberLoginPro.java execute() 대신 MemberService 부모 = MemberServiceImp1 자식 객체 생성
+//		MemberService memberService = new MemberServiceImp1();
+		// userCheck(MemberDTO memberDTO) 메서드 호출
+		MemberDTO memberDTO2 = memberService.userCheck(memberDTO);
+		
+		// 가상주소에서 주소변경 하면서 이동
+		// response.sendRedirect("/member/main");
 		return "redirect:/member/main";
 	}
 	
@@ -100,7 +129,6 @@ public class MemberController {
 	public String main() {
 		
 		// 주소 변경없이 이동
-		// /WEB-INF/views/member/main.jsp 
 		return "member/main";
 	}
 	
@@ -118,15 +146,13 @@ public class MemberController {
 	@RequestMapping(value = "/member/info", method = RequestMethod.GET)
 	public String info() {
 
-		// /WEB-INF/views/member/info.jsp 
 		return "member/info";
 	}
 	
 	//  주소매핑 ->  member/updateForm.jsp
 	@RequestMapping(value = "/member/update", method = RequestMethod.GET)
 	public String update() {
-
-		// /WEB-INF/views/member/updateForm.jsp 
+ 
 		return "member/updateForm";
 	}
 	
@@ -145,7 +171,6 @@ public class MemberController {
 	@RequestMapping(value = "/member/delete", method = RequestMethod.GET)
 	public String delete() {
 
-		// /WEB-INF/views/member/deleteForm.jsp 
 		return "member/deleteForm";
 	}
 	
@@ -158,8 +183,8 @@ public class MemberController {
 		System.out.println(memberDTO.getPass());
 		System.out.println(memberDTO.getName());
 	
-		// 가상주소에서 주소변경 하면서 이동 (가상주소 /member/main)
-		//	response.sendRedirect(forward.getPath());
+		// 가상주소에서 주소변경 하면서 이동
+		// response.sendRedirect("/member/main");
 		return "redirect:/member/main";
 	}
 
@@ -167,7 +192,6 @@ public class MemberController {
 	@RequestMapping(value = "/member/list", method = RequestMethod.GET)
 	public String list() {
 
-		// /WEB-INF/views/member/list.jsp 
 		return "member/list";
 	}
 }

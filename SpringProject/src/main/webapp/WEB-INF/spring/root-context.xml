@@ -2,8 +2,43 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
-	
+
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<!-- 데이터베이스 설정 -->
+
+	<!-- MemberController 객체 생성 -->
+	<bean id="memberController"
+		class="com.itwillbs.controller.MemberController">
+		<!-- 생성자 호출 -->
+		<!-- 생성자 전달 변수 name="memberService", 객체 생성한 참조변수 ref="memberService" -->
+		<!-- <constructor-arg name="memberService" ref="memberService"></constructor-arg> -->
+
+		<!-- set 메서드 호출 -->
+		<!-- setMemberService 메서드 호출 name="memberService" 객체 생성한 참조변수 ref="memberService" -->
+		<property name="memberService" ref="memberService"></property>
+	</bean>
+
+	<!-- MemberServiceImp1 객체 생성 MemberService memberService = new MemberServiceImp1() -->
+	<bean id="memberService"
+		class="com.itwillbs.service.MemberServiceImpl">
+		<!-- 생성자 호출 -->
+		<!-- <constructor-arg name="memberDAO" ref="memberDAO"></constructor-arg> -->
+
+		<!-- set 메서드 호출 -->
+		<property name="memberDAO" ref="memberDAO"></property>
+	</bean>
+
+	<!-- MemberDAOImp1 객체 생성 MemberDTO memberDTO = new MemberDTOImp1() -->
+	<bean id="memberDAO" class="com.itwillbs.dao.MemberDAOImpl"></bean>
+
+	<!-- DB 연동을 하기 위해서 JDBC 프로그램 필요 JDBC프로그램 자동 설치 pom.xml 파일 설치할 프로그램 목록을 넣으면 
+		Maven 저장소에서 자동으로 프로그램 다운됨 -->
+	<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>8.0.32</version>
+	</dependency>
+
 
 </beans>
