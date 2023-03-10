@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.itwillbs.domain.MemberDTO;
 import com.itwillbs.service.MemberService;
 import com.itwillbs.service.MemberServiceImpl;
+import com.mysql.cj.Session;
 
 @Controller
 public class MemberController {
@@ -27,7 +28,7 @@ public class MemberController {
 	// 데이터 은닉
 	// 스프링 파일 root-context.xml에서 객체 생성
 	// MemberController 파일에 멤버변수 memberService 전달
-	private MemberService memberService;
+	// private MemberService memberService;
 	
 	// 멤버변수 값을 생성자 또는 set 메서드 통해서 전달
 	// 생성자
@@ -35,24 +36,32 @@ public class MemberController {
 //		this.memberService = memberService;
 //	}
 	// set 메서드
-	@Inject
-	public void setMemberService(MemberService memberService) {
-		this.memberService = memberService;
-	}
+//	@Inject
+//	public void setMemberService(MemberService memberService) {
+//		this.memberService = memberService;
+//	}
 	
 	// 스프링 4버전
 	// 멤버변수 부모 공통적인 틀 선언 => 데이터 은닉
 	// @Inject 부모를 상속받은 자식 클래스 자동으로 찾아옴
-	//	@Inject
-	//	private MemberService memberService;
+	// 데이터 은닉된 부모 인터페이스 멤버변수에 xml에서 객체를 생성하고 set메서드를 통해서 전달
 	
+	// 객체 생성됨
+	@Inject
+	private MemberService memberService;
+	// MemberServiceImpl에서 @Service 찾음
+		
+	
+	// -------------------------------------------------
+		
+		
 	//	가상주소 http://localhost:8080/myweb/member/insert
 	//	       주소매핑 ->  member/insertForm.jsp 
 	@RequestMapping(value = "/member/insert", method = RequestMethod.GET)
 	public String insert() {
 		// 가상주소에서 주소변경 없이 이동(member/insertForm.jsp)
-//		RequestDispatcher dispatcher = request.getRequestDispatcher(forward.getPath());
-//		dispatcher.forward(request, response);
+		//	RequestDispatcher dispatcher = request.getRequestDispatcher(forward.getPath());
+		//	dispatcher.forward(request, response);
 
 		return "member/insertForm";
 	}
@@ -107,7 +116,7 @@ public class MemberController {
 	// 가상주소 http://localhost:8080/myweb/member/loginPro
 	//        전송방식 POST
 	@RequestMapping(value = "/member/loginPro", method = RequestMethod.POST)
-	public String loginPro(MemberDTO memberDTO) {
+	public String loginPro(MemberDTO memberDTO, HttpSession session) {
 		System.out.println("MemberController loginPro()");
 		// 디비 로그인 처리 => 처리 => 디비 자바 메서드 호출
 		System.out.println(memberDTO.getId());
@@ -119,9 +128,26 @@ public class MemberController {
 		// userCheck(MemberDTO memberDTO) 메서드 호출
 		MemberDTO memberDTO2 = memberService.userCheck(memberDTO);
 		
-		// 가상주소에서 주소변경 하면서 이동
-		// response.sendRedirect("/member/main");
-		return "redirect:/member/main";
+		if(memberDTO2 != null) {
+			// 아이디 비밀번호 일치
+			System.out.println("아이디 비밀번호 일치");
+			
+			// 회원이 일치하다
+			// => 페이지 상관없이 값이 계속 유지가 되도록 설정
+			// => 세션의 특징을 이용해서 => 세션 기억장소 안에 유지할 값을 저장해 놓고 어디서나 사용가능
+			// 세션 객체 받아와서 세션 사용
+			session.setAttribute("id", memberDTO.getId());
+			
+			// 가상주소에서 주소변경 하면서 이동
+			// response.sendRedirect("/member/main");
+			return "redirect:/member/main";
+			
+		} else {
+			// 아이디 비밀번호 틀림
+			System.out.println("아이디 비밀번호 불일치");
+			
+			return "member/msg";
+		}
 	}
 	
 	//  주소매핑 ->  member/main.jsp 
