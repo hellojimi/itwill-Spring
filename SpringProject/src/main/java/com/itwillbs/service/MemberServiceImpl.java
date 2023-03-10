@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService{
 		System.out.println("MemberServiceImp1 insertMember()");
 		
 		// MemberDAO 부모 = MemberDAOImp1 자식 객체 생성
-//		MemberDAO memberDAO = new MemberDAOImp1();
+		//	MemberDAO memberDAO = new MemberDAOImp1();
 		
 		// 메서드 호출
 		memberDAO.insertMember(memberDTO);
@@ -53,12 +53,33 @@ public class MemberServiceImpl implements MemberService{
 		System.out.println("MemberServiceImp1 userCheck()");
 		
 		// MemberDAO 부모 = MemberDAOImp1 자식 객체 생성
-//		MemberDAO memberDAO = new MemberDAOImp1();
+		//	MemberDAO memberDAO = new MemberDAOImp1();
 		// 메서드 호출
-//		MemberDTO memberDTO2 = memberDAO.userCheck(memberDTO);
+		//	MemberDTO memberDTO2 = memberDAO.userCheck(memberDTO);
 		
 		return memberDAO.userCheck(memberDTO);
 	}
-	
+
+	@Override
+	public MemberDTO getMember(String id) {
+		System.out.println("MemberServiceImpl getMember()");
+		
+		return memberDAO.getMember(id);
+	}
+
+	@Override
+	public void updateMember(MemberDTO memberDTO) {
+		System.out.println("MemberServiceImpl updateMember()");
+		
+		// 메서드 호출
+		memberDAO.updateMember(memberDTO);
+	}
+
+	@Override
+	public void deleteMember(MemberDTO memberDTO) {
+		System.out.println("MemberServiceImpl deleteMember()");
+		
+		memberDAO.deleteMember(memberDTO);
+	}
 	
 }

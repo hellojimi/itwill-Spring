@@ -12,7 +12,7 @@
 	String id = (String) session.getAttribute("id");
 	%>
 	<form action="${pageContext.request.contextPath}/member/deletePro" method="post">
-		아이디 : <input type="text" name="id" value="<%=id%>" readonly><br>
+		아이디 : <input type="text" name="id" value="${sessionScope.id}" readonly><br>
 		비밀번호 : <input type="password" name="pass"><br> 
 				<input type="submit" value="회원정보삭제">
 	</form>

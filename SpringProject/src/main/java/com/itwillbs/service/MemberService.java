@@ -9,4 +9,10 @@ public interface MemberService {
 	
 	public MemberDTO userCheck(MemberDTO memberDTO);
 	
+	public MemberDTO getMember(String id);
+	
+	public void updateMember(MemberDTO memberDTO);
+	
+	public void deleteMember(MemberDTO memberDTO);
+	
 }

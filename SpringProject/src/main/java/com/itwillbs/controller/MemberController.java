@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -106,15 +107,14 @@ public class MemberController {
 		return "redirect:/member/login";
 	}
 	
-	//  주소매핑 ->  member/loginForm.jsp 
+	// member/loginForm.jsp 
 	@RequestMapping(value = "/member/login", method = RequestMethod.GET)
 	public String login() {
 
 		return "member/loginForm";
 	}
 	
-	// 가상주소 http://localhost:8080/myweb/member/loginPro
-	//        전송방식 POST
+	// 전송방식 POST
 	@RequestMapping(value = "/member/loginPro", method = RequestMethod.POST)
 	public String loginPro(MemberDTO memberDTO, HttpSession session) {
 		System.out.println("MemberController loginPro()");
@@ -124,7 +124,7 @@ public class MemberController {
 		System.out.println(memberDTO.getName());
 		
 		// MemberLoginPro.java execute() 대신 MemberService 부모 = MemberServiceImp1 자식 객체 생성
-//		MemberService memberService = new MemberServiceImp1();
+		//	MemberService memberService = new MemberServiceImp1();
 		// userCheck(MemberDTO memberDTO) 메서드 호출
 		MemberDTO memberDTO2 = memberService.userCheck(memberDTO);
 		
@@ -150,7 +150,7 @@ public class MemberController {
 		}
 	}
 	
-	//  주소매핑 ->  member/main.jsp 
+	//  member/main.jsp 
 	@RequestMapping(value = "/member/main", method = RequestMethod.GET)
 	public String main() {
 		
@@ -158,63 +158,133 @@ public class MemberController {
 		return "member/main";
 	}
 	
-	// 주소매핑 ->  /member/logout
+	// /member/logout
 	@RequestMapping(value = "/member/logout", method = RequestMethod.GET)
-	public String logout() {
+	public String logout(HttpSession session) {
 		// 세션 초기화
 		System.out.println("MemberController logout()");
+		
+		session.invalidate();
 		// 주소 변경되면서 로그인 페이지 이동
-		// response.sendRedirect(forward.getPath());
-		return "redirect:/member/main";
-	}
-	
-	// 주소매핑 ->  member/info.jsp 
-	@RequestMapping(value = "/member/info", method = RequestMethod.GET)
-	public String info() {
-
-		return "member/info";
-	}
-	
-	//  주소매핑 ->  member/updateForm.jsp
-	@RequestMapping(value = "/member/update", method = RequestMethod.GET)
-	public String update() {
- 
-		return "member/updateForm";
-	}
-	
-	// 자동으로 가상주소 뽑아옴 /member/updatePro
-	@RequestMapping(value = "/member/updatePro", method = RequestMethod.POST)
-	public String updatePro() {
-		System.out.println("MemberController updatePro()");
-		// 디비 로그인 처리 => 처리 => 디비 자바 메서드 호출
-
-		// 주소 변경되면서 메인 페이지 이동
 		// response.sendRedirect("/member/main");
 		return "redirect:/member/main";
 	}
 	
-	// 주소매핑 ->  member/deleteForm.jsp
+	// member/info.jsp 
+	@RequestMapping(value = "/member/info", method = RequestMethod.GET)
+	public String info(HttpSession session, Model model) {
+		System.out.println("MemberController info()");
+		
+		// 세션값
+		String id = (String)session.getAttribute("id");
+		MemberDTO memberDTO = memberService.getMember(id);
+		
+		// memberDTO를 들고 member/info.jsp로 이동
+		// request.setAttribute("memberDTO", memberDTO);
+		// request 대신에 Model에 담아서 이동
+		model.addAttribute("memberDTO", memberDTO);
+		
+		// 주소 변경없이 이동
+		return "member/info";
+	}
+	
+	// member/updateForm.jsp
+	@RequestMapping(value = "/member/update", method = RequestMethod.GET)
+	public String update(HttpSession session, Model model) {
+		System.out.println("MemberController update()");
+		
+		// 세션값
+		String id = (String)session.getAttribute("id");
+		MemberDTO memberDTO = memberService.getMember(id);
+		
+		// memberDTO를 들고 member/info.jsp로 이동
+		// request.setAttribute("memberDTO", memberDTO);
+		// request 대신에 Model에 담아서 이동
+		model.addAttribute("memberDTO", memberDTO);
+		
+		// 주소 변경없이 이동
+		return "member/updateForm";
+	}
+	
+	// /member/updatePro
+	@RequestMapping(value = "/member/updatePro", method = RequestMethod.POST)
+	public String updatePro(MemberDTO memberDTO) {
+		System.out.println("MemberController updatePro()");
+		// 디비 로그인 처리 => 처리 => 디비 자바 메서드 호출
+		
+		System.out.println(memberDTO.getId());
+		System.out.println(memberDTO.getPass());
+		System.out.println(memberDTO.getName());
+		
+		// MemberLoginPro.java execute() 대신 MemberService 부모 = MemberServiceImp1 자식 객체 생성
+		//	MemberService memberService = new MemberServiceImp1();
+		// userCheck(MemberDTO memberDTO) 메서드 호출
+		MemberDTO memberDTO2 = memberService.userCheck(memberDTO);
+		
+		if(memberDTO2 != null) {
+			// 아이디 비밀번호 일치
+			System.out.println("아이디 비밀번호 일치");
+			
+			// 수정 작업
+			memberService.updateMember(memberDTO);
+			
+			// 가상주소에서 주소변경 하면서 이동
+			// response.sendRedirect("/member/main");
+			return "redirect:/member/main";
+			
+		} else {
+			// 아이디 비밀번호 틀림
+			System.out.println("아이디 비밀번호 불일치");
+			
+			return "member/msg";
+		}
+	}
+	
+	// member/deleteForm.jsp
 	@RequestMapping(value = "/member/delete", method = RequestMethod.GET)
 	public String delete() {
-
+		
+//		// 세션값
+//		String id = (String)session.getAttribute("id");
+//		MemberDTO memberDTO = memberService.getMember(id);
+		
 		return "member/deleteForm";
 	}
 	
-	// 자동으로 가상주소 뽑아옴 /member/deletePro 전송방식 POST
+	// /member/deletePro 전송방식 POST
 	@RequestMapping(value = "/member/deletePro", method = RequestMethod.POST)
-	public String deletePro(MemberDTO memberDTO) {
+	public String deletePro(MemberDTO memberDTO, HttpSession session) {
 		System.out.println("MemberController deletePro()");
 		// 디비 로그인 처리 => 처리 => 디비 자바 메서드 호출
 		System.out.println(memberDTO.getId());
 		System.out.println(memberDTO.getPass());
 		System.out.println(memberDTO.getName());
-	
-		// 가상주소에서 주소변경 하면서 이동
-		// response.sendRedirect("/member/main");
-		return "redirect:/member/main";
+		
+		MemberDTO memberDTO2 = memberService.userCheck(memberDTO);
+		
+		if(memberDTO2 != null) {
+			// 아이디 비밀번호 일치
+			System.out.println("아이디 비밀번호 일치");
+			
+			// 수정 작업
+			memberService.deleteMember(memberDTO);
+			
+			session.invalidate();
+			
+			// 가상주소에서 주소변경 하면서 이동
+			// response.sendRedirect("/member/main");
+			return "redirect:/member/main";
+			
+		} else {
+			// 아이디 비밀번호 틀림
+			System.out.println("아이디 비밀번호 불일치");
+			
+			return "member/msg";
+		}
+
 	}
 
-	// 주소매핑 ->  member/list.jsp
+	// member/list.jsp
 	@RequestMapping(value = "/member/list", method = RequestMethod.GET)
 	public String list() {
 

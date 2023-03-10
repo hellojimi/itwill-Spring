@@ -7,7 +7,6 @@
 <title>member/info.jsp</title>
 </head>
 <body>
-<h1>member/info.jsp</h1>
 <%
 // // 회원정보 기준값 id => 세션에 "id"값 저장 되어있음
 // // 세션에서 "id" 값을 가져오기 => 변수저장
@@ -21,13 +20,14 @@
 
 // MemberDTO dto =(MemberDTO)request.getAttribute("dto");
 
-	%>
-아이디 : <%//=dto.getId() %><br>
-비밀번호 : <%//=dto.getPass() %><br>
-이름 : <%//=dto.getName() %><br>
-가입날짜 : <%//=dto.getDate() %><br>	
+%>
+아이디 : ${memberDTO.id} <br>
+비밀번호 : ${memberDTO.pass}<br>
+이름 : ${memberDTO.name}<br>
+가입날짜 : ${memberDTO.date}<br>	
 
-<a href="MemberMain.me">메인으로 이동</a>
+<a href="${pageContext.request.contextPath}/member/main">메인으로 이동</a>
+
 </body>
 </html>
 
